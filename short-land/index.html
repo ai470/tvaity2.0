@@ -1,69 +1,129 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>ТВАЙТИ — Новый способ управления деньгами</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ТВАЙТИ 2.0 — Новый способ управления деньгами</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
 
-<section class="hero">
-  <div class="hero__glow" aria-hidden="true"></div>
+  <section class="hero">
+    <div class="hero__glow"></div>
+    <div class="hero__arc"></div>
 
-  <div class="hero__inner">
-    <div class="hero__logo">
-      <svg class="hero__logo-mark" viewBox="0 0 71 69" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-        <path d="M43.6143 68.2649H27.496V32.2362C27.496 23.3344 34.7124 16.1181 43.6143 16.1181V68.2649Z" fill="currentColor"/>
-        <path d="M70.6362 0V16.1181L40.2958 16.1181C31.3939 16.1181 24.1775 8.90178 24.1775 0L70.6362 0Z" fill="currentColor"/>
-        <path d="M0 0L0 16.1181H8.05916C16.9611 16.1181 24.1775 8.90178 24.1775 0L0 0Z" fill="currentColor"/>
-      </svg>ВАЙТИ
+    <div class="hero__inner">
+      <div class="hero__top">
+        <svg viewBox="0 0 738 168" fill="none" xmlns="http://www.w3.org/2000/svg" class="hero__logo" aria-label="ТВАЙТИ" role="img">
+          <path d="M208.567 100.588C232.294 101.882 251.944 110.388 251.944 132.391C251.944 156.429 228.772 167.153 201.893 167.153H141.092V37.7204H200.41C225.806 37.7204 247.68 46.0411 247.68 70.4485C247.68 89.1238 234.889 98.9237 208.567 100.588ZM171.493 61.2033V90.2332H197.259C211.347 90.2332 217.279 84.1314 217.279 75.6258C217.279 67.1202 211.347 61.2033 197.445 61.2033H171.493ZM199.298 143.67C215.426 143.67 221.543 137.384 221.543 128.139C221.543 119.078 215.611 112.422 200.596 112.422H171.493V143.67H199.298Z" fill="currentColor"></path>
+          <path d="M345.769 167.153L337.427 138.863H286.635L278.294 167.153H248.264L289.045 37.7204H335.944L376.726 167.153H345.769ZM330.383 115.935L312.031 54.3618L293.68 115.935H330.383Z" fill="currentColor"></path>
+          <path d="M439.908 27.7356C418.034 27.7356 408.21 16.2716 407.654 0H426.376C426.747 5.17731 430.084 11.464 439.908 11.464C449.547 11.464 452.699 5.17731 453.255 0H471.977C471.421 16.2716 461.782 27.7356 439.908 27.7356ZM450.66 37.7204H497.929V167.153H468.27V61.3882L428.971 167.153H381.516V37.7204H411.176V143.486L450.66 37.7204Z" fill="currentColor"></path>
+          <path d="M504.662 62.4976V37.7204H614.587V62.4976H574.918V167.153H544.517V62.4976H504.662Z" fill="currentColor"></path>
+          <path d="M690.541 37.7204H737.811V167.153H708.151V61.3882L668.853 167.153H621.398V37.7204H651.057V143.486L690.541 37.7204Z" fill="currentColor"></path>
+          <path d="M82.6779 167.153H52.123V98.8541C52.123 81.9791 65.8029 68.2992 82.6779 68.2992V167.153Z" fill="currentColor"></path>
+          <path d="M133.902 37.7443V68.2992L76.3872 68.2992C59.5122 68.2992 45.8323 54.6193 45.8323 37.7443L133.902 37.7443Z" fill="currentColor"></path>
+          <path d="M4.92962e-07 37.7443L0 68.2992H15.2774C32.1524 68.2992 45.8323 54.6193 45.8323 37.7443L4.92962e-07 37.7443Z" fill="currentColor"></path>
+        </svg>
+        <p class="hero__date">22&ndash;24 сентября в 18:00 по МСК</p>
+        <p class="hero__note">Масштабная презентация приложения ТВАЙТИ 2.0</p>
+      </div>
+
+      <div class="hero__middle">
+        <h1 class="hero__title">Новый способ управления&nbsp;деньгами</h1>
+        <p class="hero__subtitle">который доступен каждому</p>
+
+        <a href="#signup" class="btn">
+          Зарегистрироваться
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M3.33 8H12.67M12.67 8L8.67 4M12.67 8L8.67 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </a>
+      </div>
+
+      <div class="countdown" id="countdown">
+        <div class="countdown__item">
+          <span class="countdown__value" id="cd-days">00</span>
+          <span class="countdown__label">дня</span>
+        </div>
+        <span class="countdown__sep">:</span>
+        <div class="countdown__item">
+          <span class="countdown__value" id="cd-hours">00</span>
+          <span class="countdown__label">часов</span>
+        </div>
+        <span class="countdown__sep">:</span>
+        <div class="countdown__item">
+          <span class="countdown__value" id="cd-minutes">00</span>
+          <span class="countdown__label">минут</span>
+        </div>
+        <span class="countdown__sep">:</span>
+        <div class="countdown__item">
+          <span class="countdown__value" id="cd-seconds">00</span>
+          <span class="countdown__label">секунд</span>
+        </div>
+      </div>
     </div>
+  </section>
 
-    <p class="hero__date">22&ndash;24 сентября в 18:00 по МСК</p>
-    <p class="hero__lead">Масштабная презентация приложения ТВАЙТИ 2.0</p>
+  <footer class="footer">
+    <div class="footer__inner">
+      <div class="footer__top">
+        <svg width="114" height="26" viewBox="0 0 738 168" fill="none" xmlns="http://www.w3.org/2000/svg" class="footer__logo" aria-label="ТВАЙТИ" role="img">
+          <path d="M208.567 100.588C232.294 101.882 251.944 110.388 251.944 132.391C251.944 156.429 228.772 167.153 201.893 167.153H141.092V37.7204H200.41C225.806 37.7204 247.68 46.0411 247.68 70.4485C247.68 89.1238 234.889 98.9237 208.567 100.588ZM171.493 61.2033V90.2332H197.259C211.347 90.2332 217.279 84.1314 217.279 75.6258C217.279 67.1202 211.347 61.2033 197.445 61.2033H171.493ZM199.298 143.67C215.426 143.67 221.543 137.384 221.543 128.139C221.543 119.078 215.611 112.422 200.596 112.422H171.493V143.67H199.298Z" fill="currentColor"></path>
+          <path d="M345.769 167.153L337.427 138.863H286.635L278.294 167.153H248.264L289.045 37.7204H335.944L376.726 167.153H345.769ZM330.383 115.935L312.031 54.3618L293.68 115.935H330.383Z" fill="currentColor"></path>
+          <path d="M439.908 27.7356C418.034 27.7356 408.21 16.2716 407.654 0H426.376C426.747 5.17731 430.084 11.464 439.908 11.464C449.547 11.464 452.699 5.17731 453.255 0H471.977C471.421 16.2716 461.782 27.7356 439.908 27.7356ZM450.66 37.7204H497.929V167.153H468.27V61.3882L428.971 167.153H381.516V37.7204H411.176V143.486L450.66 37.7204Z" fill="currentColor"></path>
+          <path d="M504.662 62.4976V37.7204H614.587V62.4976H574.918V167.153H544.517V62.4976H504.662Z" fill="currentColor"></path>
+          <path d="M690.541 37.7204H737.811V167.153H708.151V61.3882L668.853 167.153H621.398V37.7204H651.057V143.486L690.541 37.7204Z" fill="currentColor"></path>
+          <path d="M82.6779 167.153H52.123V98.8541C52.123 81.9791 65.8029 68.2992 82.6779 68.2992V167.153Z" fill="currentColor"></path>
+          <path d="M133.902 37.7443V68.2992L76.3872 68.2992C59.5122 68.2992 45.8323 54.6193 45.8323 37.7443L133.902 37.7443Z" fill="currentColor"></path>
+          <path d="M4.92962e-07 37.7443L0 68.2992H15.2774C32.1524 68.2992 45.8323 54.6193 45.8323 37.7443L4.92962e-07 37.7443Z" fill="currentColor"></path>
+        </svg>
+        <div class="footer__links">
+          <button type="button">Политика конфиденциальности</button>
+          <a href="docs/oferta.pdf" target="_blank" rel="noopener noreferrer">Оферта</a>
+          <a href="docs/soglasie-na-reklamu.pdf" target="_blank" rel="noopener noreferrer">Согласие на получение рекламы</a>
+          <a href="docs/politika-obrabotki-pd.pdf" target="_blank" rel="noopener noreferrer">Политика обработки персональных данных</a>
+        </div>
+      </div>
 
-    <h1 class="hero__title">
-      Новый способ<br>
-      управления деньгами
-    </h1>
-    <p class="hero__subtitle">который доступен каждому</p>
+      <div class="footer__divider"></div>
 
-    <a href="#register" class="hero__cta">
-      Зарегистрироваться
-      <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3.33334 8H12.6667" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M9.33334 4.66675L12.6667 8.00008L9.33334 11.3334" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
-    </a>
+      <div class="footer__grid">
+        <div class="footer__col">
+          <p class="footer__col-title">ООО «Финтеллект»</p>
+          <p>ОГРН 1257700442174</p>
+          <p>ИНН 7743478689</p>
+        </div>
+        <div class="footer__col">
+          <p class="footer__col-title">Реестр отечественного ПО</p>
+          <a href="https://reestr.digital.gov.ru/reestr/7075541/?sphrase_id=19513601" target="_blank" rel="noopener noreferrer">Реестровая запись №32252 от 17.02.2026 →</a>
+        </div>
+        <div class="footer__col footer__col--contacts">
+          <p class="footer__col-title">Контакты</p>
+          <a href="tel:+79651366352" class="footer__contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M13.832 16.568a1 1 0 0 0 1.213-.303l.355-.465A2 2 0 0 1 17 15h3a2 2 0 0 1 2 2v3a2 2 0 0 1-2 2A18 18 0 0 1 2 4a2 2 0 0 1 2-2h3a2 2 0 0 1 2 2v3a2 2 0 0 1-.8 1.6l-.468.351a1 1 0 0 0-.292 1.233 14 14 0 0 0 6.392 6.384"></path></svg>
+            +7 (965) 136-63-52
+          </a>
+          <a href="mailto:sluzhba_zaboty@plus-fin.ru" class="footer__contact">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m22 7-8.991 5.727a2 2 0 0 1-2.009 0L2 7"></path><rect x="2" y="4" width="20" height="16" rx="2"></rect></svg>
+            sluzhba_zaboty@plus-fin.ru
+          </a>
+          <p class="footer__contact footer__contact--address">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 10c0 4.993-5.539 10.193-7.399 11.799a1 1 0 0 1-1.202 0C9.539 20.193 4 14.993 4 10a8 8 0 0 1 16 0"></path><circle cx="12" cy="10" r="3"></circle></svg>
+            Москва, Ильменский проезд, д 14 к 3
+          </p>
+        </div>
+      </div>
 
-    <div class="countdown" data-countdown data-target="2026-09-22T18:00:00+03:00">
-      <div class="countdown__item">
-        <span class="countdown__value" data-unit="days">00</span>
-        <span class="countdown__label">дня</span>
-      </div>
-      <span class="countdown__divider"></span>
-      <div class="countdown__item">
-        <span class="countdown__value" data-unit="hours">00</span>
-        <span class="countdown__label">часов</span>
-      </div>
-      <span class="countdown__divider"></span>
-      <div class="countdown__item">
-        <span class="countdown__value" data-unit="minutes">00</span>
-        <span class="countdown__label">минут</span>
-      </div>
-      <span class="countdown__divider"></span>
-      <div class="countdown__item">
-        <span class="countdown__value" data-unit="seconds">00</span>
-        <span class="countdown__label">секунд</span>
-      </div>
+      <div class="footer__divider footer__divider--tight"></div>
+
+      <p class="footer__disclaimer">Материалы в приложении ТВАЙТИ носят информационный и ознакомительный характер и не являются индивидуальной инвестиционной рекомендацией, офертой или гарантией дохода. ТВАЙТИ — программный продукт (ПО). Решения о покупке финансовых инструментов пользователь принимает самостоятельно, оценивая риски.</p>
+      <p class="footer__copyright">© 2026 ООО «Финтеллект». Все права защищены.</p>
     </div>
-  </div>
-</section>
+  </footer>
 
-<script src="script.js"></script>
+  <script src="script.js"></script>
 </body>
 </html>
