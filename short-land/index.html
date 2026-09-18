@@ -32,15 +32,15 @@
       </div>
 
       <div class="hero__middle">
-        <h1 class="hero__title">Новый способ управления&nbsp;деньгами</h1>
+        <h1 class="hero__title">Новый способ управления деньгами</h1>
         <p class="hero__subtitle">который доступен каждому</p>
 
-        <a href="#signup" class="btn">
+        <button type="button" class="btn" data-gc-open>
           Зарегистрироваться
           <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M3.33 8H12.67M12.67 8L8.67 4M12.67 8L8.67 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
-        </a>
+        </button>
       </div>
 
       <div class="countdown" id="countdown">
@@ -124,6 +124,19 @@
     </div>
   </footer>
 
+  <div class="gc-modal" id="gc-modal" aria-hidden="true">
+    <div class="gc-modal__backdrop" data-gc-close></div>
+    <div class="gc-modal__panel" role="dialog" aria-modal="true" aria-label="Регистрация">
+      <button type="button" class="gc-modal__close" data-gc-close aria-label="Закрыть">
+        <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M3 3L13 13M13 3L3 13" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+      <div class="gc-modal__frame" id="gc-frame-container"></div>
+    </div>
+  </div>
+
   <script src="script.js"></script>
+  <script src="getcourse-widget.js"></script>
 </body>
 </html>
