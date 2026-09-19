@@ -7,72 +7,22 @@
   var GC_BASE_SRC = GC_ACCOUNT_ORIGIN + "/pl/lite/widget/widget?id=" + GC_WIDGET_ID;
   var GC_UNIQ_NAME = "9bac8499ba59f5edc8a0b37fd896ce498bb63482";
 
-  function getTrackingParamName(name) {
-    var normalizedName = name.toLowerCase();
-    if (normalizedName === "ref" || normalizedName.indexOf("utm_") === 0) {
-      return normalizedName;
-    }
-    return null;
-  }
+  // Сам блок GetCourse отдаёт вокруг формы свои отступы:
+  //   #ltBlock2251705393 .lt-block-wrapper { padding-top: 75px; padding-bottom: 75px }
+  // Это чужой домен, CSS туда не достаёт, поэтому пустоту срезаем снаружи.
+  // Если отступы блока обнулить в админке GetCourse — поставить здесь 0.
+  var GC_INNER_PADDING = 75;
 
-  function buildGetCourseIframeSrc(opts) {
-    var baseSrc = opts.baseSrc;
-    var currentHref = opts.currentHref;
-    var documentReferrer = opts.documentReferrer || "";
-    var clrtQueryData = opts.clrtQueryData;
-
-    var targetUrl = new URL(baseSrc);
-    var currentUrl = new URL(currentHref);
-    var trackingParams = [];
-
-    currentUrl.searchParams.forEach(function (value, name) {
-      var trackingName = getTrackingParamName(name);
-      if (trackingName) {
-        trackingParams.push([trackingName, value]);
-      }
-    });
-
-    trackingParams.forEach(function (pair) {
-      var name = pair[0];
-      Array.from(targetUrl.searchParams.keys()).forEach(function (existingName) {
-        if (existingName.toLowerCase() === name) {
-          targetUrl.searchParams.delete(existingName);
-        }
-      });
-    });
-
-    trackingParams.forEach(function (pair) {
-      targetUrl.searchParams.append(pair[0], pair[1]);
-    });
-
-    if (!targetUrl.searchParams.has("ref") && documentReferrer) {
-      targetUrl.searchParams.set("ref", documentReferrer);
-    }
-
-    targetUrl.searchParams.set("loc", currentHref);
-
-    try {
-      if (clrtQueryData) {
-        targetUrl.searchParams.set("clrtQueryData", JSON.stringify(clrtQueryData));
-      }
-    } catch (e) {
-      // игнорируем ошибки сериализации
-    }
-
-    return targetUrl.toString();
-  }
+  // Ниже этой высоты считаем, что GetCourse прислал промежуточное значение,
+  // и не сжимаем под него контейнер.
+  var GC_MIN_USABLE_HEIGHT = GC_INNER_PADDING * 2 + 160;
 
   function init() {
-    var modal = document.getElementById("gc-modal");
+    var layer = document.getElementById("gc-layer");
     var frameContainer = document.getElementById("gc-frame-container");
-    if (!modal || !frameContainer) return;
+    if (!layer || !frameContainer) return;
 
-    var iframeSrc = buildGetCourseIframeSrc({
-      baseSrc: GC_BASE_SRC,
-      currentHref: window.location.href,
-      documentReferrer: document.referrer,
-      clrtQueryData: window.clrtQueryData,
-    });
+    var iframeSrc = window.GcTracking.withTrackingParams(GC_BASE_SRC);
 
     var iframe = document.createElement("iframe");
     iframe.src = iframeSrc;
@@ -80,40 +30,63 @@
     iframe.title = "Регистрация — ТВАЙТИ 2.0";
     iframe.loading = "eager";
     iframe.allowFullscreen = true;
+    // Удобно проверить собранные метки прямо в DevTools, не заходя в GetCourse.
+    iframe.setAttribute("data-gc-src", iframeSrc);
+    window.__gcIframeSrc = iframeSrc;
     frameContainer.appendChild(iframe);
 
-    function openModal() {
-      modal.classList.add("is-open");
-      modal.setAttribute("aria-hidden", "false");
-      document.body.classList.add("gc-modal-open");
+    var lastOpener = null;
+
+    function openLayer(opener) {
+      lastOpener = opener || null;
+      layer.classList.add("is-open");
+      layer.setAttribute("aria-hidden", "false");
+      document.body.classList.add("gc-layer-open");
     }
 
-    function closeModal() {
-      modal.classList.remove("is-open");
-      modal.setAttribute("aria-hidden", "true");
-      document.body.classList.remove("gc-modal-open");
+    function closeLayer() {
+      layer.classList.remove("is-open");
+      layer.setAttribute("aria-hidden", "true");
+      document.body.classList.remove("gc-layer-open");
+      if (lastOpener && typeof lastOpener.focus === "function") {
+        lastOpener.focus();
+      }
     }
 
     document.querySelectorAll("[data-gc-open]").forEach(function (btn) {
       btn.addEventListener("click", function (e) {
         e.preventDefault();
-        openModal();
+        openLayer(btn);
       });
     });
 
-    modal.querySelectorAll("[data-gc-close]").forEach(function (el) {
-      el.addEventListener("click", closeModal);
+    layer.querySelectorAll("[data-gc-close]").forEach(function (el) {
+      el.addEventListener("click", closeLayer);
     });
 
     document.addEventListener("keydown", function (e) {
-      if (e.key === "Escape" && modal.classList.contains("is-open")) {
-        closeModal();
+      if (e.key === "Escape" && layer.classList.contains("is-open")) {
+        closeLayer();
       }
     });
 
-    window.addEventListener("message", function (event) {
-      if (event.origin !== GC_ACCOUNT_ORIGIN) return;
+    var appliedHeight = 0;
 
+    function applyHeight(height) {
+      if (height === appliedHeight) return;
+      appliedHeight = height;
+
+      // Срезаем собственные отступы блока GetCourse: iframe тянем на полную
+      // присланную высоту и сдвигаем вверх, а видимое окно делаем короче.
+      var crop = height >= GC_MIN_USABLE_HEIGHT ? GC_INNER_PADDING : 0;
+
+      iframe.style.height = height + "px";
+      iframe.style.marginTop = crop ? -crop + "px" : "";
+      frameContainer.style.height = height - crop * 2 + "px";
+      layer.setAttribute("data-gc-sized", "");
+    }
+
+    window.addEventListener("message", function (event) {
       var data = event.data;
       if (typeof data === "string") {
         try {
@@ -124,13 +97,17 @@
       }
       if (!data || typeof data !== "object") return;
 
-      var frameId = data.uniqName || data.scriptId || data.iframeName || data.name;
-      if (frameId && frameId !== GC_UNIQ_NAME) return;
+      // Как проверяет сам GetCourse. Origin не используем как единственный фильтр:
+      // аккаунт может отвечать с другого хоста, и тогда высота молча не применялась бы.
+      var isOurWidget =
+        data.uniqName === GC_UNIQ_NAME ||
+        (event.source === iframe.contentWindow && event.origin === GC_ACCOUNT_ORIGIN);
+      if (!isOurWidget) return;
 
-      var height = data.height || data.frameHeight || (data.data && data.data.height);
-      if (height) {
-        iframe.style.height = height + "px";
-      }
+      var height = Number(data.height || data.frameHeight || (data.data && data.data.height));
+      if (!isFinite(height) || height <= 0) return;
+
+      applyHeight(height);
     });
   }
 

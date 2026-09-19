@@ -23,6 +23,10 @@ body {
   font-family: var(--font);
   color: var(--text);
   -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
 }
 
 a {
@@ -34,7 +38,9 @@ a {
 
 .hero {
   position: relative;
+  flex-shrink: 0;
   min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -199,24 +205,29 @@ a {
   transform: translateY(-8px);
 }
 
-/* ---------- Mobile (matches the "Посадка моб" 360px frame) ---------- */
+/* ---------- Mobile / tablet portrait ----------
+   Секция по высоте контента: на узких экранах фиксированные 100vh оставляли
+   мёртвую зону между таймером и подвалом. */
 
-@media (max-width: 480px) {
+@media (max-width: 767px) {
   .hero {
-    padding: 36px 20px;
-    min-height: 100vh;
-    align-items: flex-start;
-    padding-top: 40px;
+    min-height: 0;
+    align-items: center;
+    padding: clamp(40px, 9vw, 64px) 20px clamp(48px, 11vw, 76px);
   }
 
   .hero__inner {
-    gap: 32px;
+    gap: clamp(26px, 6vw, 36px);
   }
 
-  .hero__top {
-    margin-top: -40px;
+  /* Дуга-горизонт была привязана к высоте секции в процентах; после укорачивания
+     считаем её от собственного размера, чтобы линия осталась у низа героя. */
+  .hero__arc {
+    bottom: calc(60px - 130vw);
   }
+}
 
+@media (max-width: 480px) {
   .countdown {
     gap: 10px;
   }
@@ -231,6 +242,8 @@ a {
 .footer {
   position: relative;
   z-index: 1;
+  flex-shrink: 0;
+  margin-top: auto;
   background: var(--bg);
   color: #5C6F99;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -377,128 +390,130 @@ a {
   }
 }
 
-/* ---------- GetCourse signup modal ---------- */
+/* ---------- GetCourse signup layer ----------
+   Мобилка — полноэкранный слой со скроллом страницы виджета.
+   ПК (>=1024px) — карточка по высоте контента. Высоту в обоих случаях
+   проставляет getcourse-widget.js из postMessage самого GetCourse. */
 
-body.gc-modal-open {
+body.gc-layer-open {
   overflow: hidden;
 }
 
-.gc-modal {
+.gc-layer {
   position: fixed;
   inset: 0;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 24px;
+  background: #fff;
+  overflow-x: hidden;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
   opacity: 0;
   visibility: hidden;
   transition: opacity 0.2s ease;
 }
 
-.gc-modal.is-open {
+.gc-layer.is-open {
   opacity: 1;
   visibility: visible;
 }
 
-.gc-modal__backdrop {
-  position: absolute;
-  inset: 0;
-  background: rgba(4, 7, 16, 0.72);
-  backdrop-filter: blur(3px);
+/* Затемнение нужно только карточке на ПК. */
+.gc-layer__backdrop {
+  display: none;
 }
 
-.gc-modal__panel {
-  position: relative;
-  z-index: 1;
-  width: min(480px, 100%);
-  max-height: 90vh;
-  display: flex;
-  flex-direction: column;
-  background: #0b1226;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  border-radius: 20px;
-  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
-  overflow: hidden;
-  transform: translateY(12px) scale(0.98);
-  transition: transform 0.2s ease;
+.gc-layer__inner {
+  width: 100%;
+  min-height: 100%;
+  background: #fff;
 }
 
-.gc-modal.is-open .gc-modal__panel {
-  transform: translateY(0) scale(1);
+.gc-layer__frame {
+  width: 100%;
+  overflow: hidden; /* обрезает собственные отступы блока GetCourse */
 }
 
-.gc-modal__close {
-  position: absolute;
-  top: 12px;
-  right: 12px;
+.gc-layer__frame iframe {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+  min-height: 100dvh;
+  border: 0;
+}
+
+/* Реальная высота пришла — заглушка убирается, иначе снизу белый хвост. */
+.gc-layer[data-gc-sized] .gc-layer__frame iframe {
+  min-height: 0;
+}
+
+.gc-layer__close {
+  position: fixed;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  right: calc(12px + env(safe-area-inset-right, 0px));
   z-index: 2;
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   border: none;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
+  background: rgba(8, 16, 33, 0.82);
   color: #fff;
   cursor: pointer;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.28);
   transition: background 0.15s ease;
 }
 
-.gc-modal__close:hover {
-  background: rgba(255, 255, 255, 0.16);
+.gc-layer__close:hover {
+  background: rgba(8, 16, 33, 0.95);
 }
 
-.gc-modal__frame {
-  flex: 1;
-  min-height: 420px;
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-}
-
-.gc-modal__frame iframe {
-  display: block;
-  width: 100%;
-  height: 100%;
-  min-height: 420px;
-  border: 0;
-}
-
-@media (max-width: 480px) {
-  .gc-modal {
-    padding: 12px;
-  }
-}
-
-@media (max-height: 720px) {
-  .gc-modal {
-    padding: 12px;
+@media (min-width: 1024px) {
+  .gc-layer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: transparent;
+    overflow: hidden;
   }
 
-  .gc-modal__panel {
-    max-height: 96vh;
+  .gc-layer__backdrop {
+    display: block;
+    position: absolute;
+    inset: 0;
+    background: rgba(4, 7, 16, 0.72);
+    backdrop-filter: blur(4px);
   }
 
-  .gc-modal__frame {
-    min-height: 260px;
+  .gc-layer__inner {
+    position: relative;
+    z-index: 1;
+    width: min(560px, 92vw);
+    min-height: 0;
+    max-height: 90vh;
+    max-height: 90dvh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 20px;
+    box-shadow: 0 24px 64px rgba(0, 0, 0, 0.5);
+    transform: translateY(12px) scale(0.98);
+    transition: transform 0.2s ease;
+    scrollbar-width: thin;
   }
 
-  .gc-modal__frame iframe {
-    min-height: 260px;
-  }
-}
-
-/* Safety net for very short viewports: scale the whole card down so it
-   has a better chance of fitting without scrolling. This is a paint-time
-   transform, so it also visually shrinks the GetCourse iframe's content
-   even though we can't reach inside a cross-origin iframe with CSS. */
-@media (max-height: 660px) {
-  .gc-modal.is-open .gc-modal__panel {
-    transform: scale(0.9);
+  .gc-layer.is-open .gc-layer__inner {
+    transform: none;
   }
 
-  .gc-modal__panel {
-    transform-origin: center center;
+  .gc-layer__frame iframe {
+    min-height: 560px;
+  }
+
+  .gc-layer__close {
+    top: 18px;
+    right: 18px;
   }
 }
