@@ -472,20 +472,40 @@ body.gc-modal-open {
   border: 0;
 }
 
-@media (max-width: 480px), (max-height: 720px) {
+@media (max-width: 480px) {
+  .gc-modal {
+    padding: 12px;
+  }
+}
+
+@media (max-height: 720px) {
   .gc-modal {
     padding: 12px;
   }
 
   .gc-modal__panel {
-    max-height: 92vh;
+    max-height: 96vh;
   }
 
   .gc-modal__frame {
-    min-height: 320px;
+    min-height: 260px;
   }
 
   .gc-modal__frame iframe {
-    min-height: 320px;
+    min-height: 260px;
+  }
+}
+
+/* Safety net for very short viewports: scale the whole card down so it
+   has a better chance of fitting without scrolling. This is a paint-time
+   transform, so it also visually shrinks the GetCourse iframe's content
+   even though we can't reach inside a cross-origin iframe with CSS. */
+@media (max-height: 660px) {
+  .gc-modal.is-open .gc-modal__panel {
+    transform: scale(0.9);
+  }
+
+  .gc-modal__panel {
+    transform-origin: center center;
   }
 }
