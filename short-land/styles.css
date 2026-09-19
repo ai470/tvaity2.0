@@ -419,7 +419,7 @@ body.gc-modal-open {
   position: relative;
   z-index: 1;
   width: min(480px, 100%);
-  max-height: 88vh;
+  max-height: 90vh;
   display: flex;
   flex-direction: column;
   background: #0b1226;
@@ -460,7 +460,8 @@ body.gc-modal-open {
 .gc-modal__frame {
   flex: 1;
   min-height: 420px;
-  max-height: 88vh;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
 }
 
 .gc-modal__frame iframe {
@@ -469,4 +470,22 @@ body.gc-modal-open {
   height: 100%;
   min-height: 420px;
   border: 0;
+}
+
+@media (max-width: 480px), (max-height: 720px) {
+  .gc-modal {
+    padding: 12px;
+  }
+
+  .gc-modal__panel {
+    max-height: 92vh;
+  }
+
+  .gc-modal__frame {
+    min-height: 320px;
+  }
+
+  .gc-modal__frame iframe {
+    min-height: 320px;
+  }
 }
