@@ -90,16 +90,7 @@ a {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 10px;
-  margin-top: -14px;
-}
-
-.hero__logo {
-  color: var(--text);
-  width: clamp(170px, 27vw, 440px);
-  height: auto;
-  flex-shrink: 0;
-  margin-bottom: 28px;
+  gap: 16px;
 }
 
 .hero__date {
@@ -109,9 +100,11 @@ a {
 }
 
 .hero__note {
-  font-weight: 400;
-  font-size: clamp(15px, 1.6vw, 20px);
-  color: var(--text-faint);
+  font-weight: 500;
+  font-size: clamp(20px, 2.6vw, 30px);
+  letter-spacing: -0.04em;
+  text-transform: uppercase;
+  color: rgba(255, 255, 255, 0.82);
 }
 
 /* ---------- Middle block: headline + CTA ---------- */
@@ -213,15 +206,15 @@ a {
     padding: 36px 20px;
     min-height: 100vh;
     align-items: flex-start;
-    padding-top: 64px;
+    padding-top: 40px;
   }
 
   .hero__inner {
     gap: 32px;
   }
 
-  .hero__logo {
-    width: 170px;
+  .hero__top {
+    margin-top: -40px;
   }
 
   .countdown {
