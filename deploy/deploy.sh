@@ -11,7 +11,15 @@ flock -n 9 || { echo 'Another deployment is running.' >&2; exit 1; }
 
 [[ $(git branch --show-current) == main ]] || { echo 'Expected main branch.' >&2; exit 1; }
 [[ -z $(git status --porcelain) ]] || { echo 'Working tree is dirty; refusing to overwrite changes.' >&2; exit 1; }
-git fetch origin main
+fetched=0
+for attempt in 1 2 3; do
+    if timeout 30 git fetch origin main; then
+        fetched=1
+        break
+    fi
+    echo "GitHub fetch attempt $attempt failed; production is unchanged." >&2
+done
+[[ $fetched -eq 1 ]] || exit 1
 git merge --ff-only origin/main
 [[ $(git rev-parse HEAD) == $(git rev-parse origin/main) ]] || {
     echo 'Local main differs from origin/main; refusing to deploy.' >&2

@@ -50,7 +50,7 @@ class ReleaseTests(unittest.TestCase):
                 "runuser": 'shift 3; exec "$@"',
                 "python3": '''
 case "$*" in
-  *prepare_legacy.py*) exit 0 ;;
+  *prepare_legacy.py*|*prepare_assets.py*) exit 0 ;;
   *--legacy-only*) [[ "$FAILURE" != preflight ]] ;;
   *--connect-address*) [[ "$FAILURE" != origin ]] ;;
   *) [[ "$FAILURE" != public ]] ;;
