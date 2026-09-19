@@ -48,7 +48,7 @@ async function setupPage(browser, width, height) {
 (async()=>{
   const browser=await playwright[browserName].launch({headless:true});
   try {
-    const sizes = browserName==='chromium'
+    const sizes = process.env.SKIP_SHORT==='1' ? [] : browserName==='chromium'
       ? [[320,568],[360,640],[390,844],[430,932],[768,1024],[844,390],[1024,768],[1366,768],[1920,1080]]
       : [[390,844],[1366,768]];
     for (const [width,height] of sizes) {
@@ -84,11 +84,26 @@ async function setupPage(browser, width, height) {
         console.log(`PASS ${browserName} short ${width}x${height}: layout, form size, UTM fields, open/close`);
       } finally {await context.close();}
     }
+    if(process.env.SKIP_SHORT!=='1') {
+      for(const [width,height] of [[320,568],[390,844],[1366,768]]) {
+        const {context,page}=await setupPage(browser,width,height);
+        try {
+          await page.goto(new URL('../sps/',shortBase).href,{waitUntil:'domcontentloaded'});
+          await page.evaluate(()=>document.fonts.ready);
+          assert.equal(await page.evaluate(()=>document.documentElement.scrollWidth>innerWidth),false,`sps ${width}: overflow`);
+          console.log(`PASS ${browserName} /sps/ ${width}x${height}: responsive layout`);
+        } finally {await context.close();}
+      }
+    }
     if(process.env.SKIP_LEGACY!=='1') {
       for(const [route,ids] of [['reg',['1657350','1657351']],['reg-01',['1657552','1657553']]]) {
         const {context,page}=await setupPage(browser,1366,768);
         try {
           await page.goto(`https://2.tvaity.ru/${route}/`+query,{waitUntil:'domcontentloaded'});
+          // These exported Next.js pages initially contain buttons before React
+          // attaches their handlers. Do not race hydration with the first click.
+          await page.waitForFunction(()=>Array.from(document.querySelectorAll('button')).some(button=>
+            button.textContent==='Зарегистрироваться' && Object.keys(button).some(key=>key.startsWith('__reactProps$'))));
           for(let i=0;i<2;i++) {
             await page.getByRole('button',{name:'Зарегистрироваться',exact:true}).nth(i).click();
             await checkTracking(page,ids[i]);
