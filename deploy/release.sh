@@ -91,7 +91,8 @@ if ! cmp -s "$repo/deploy/nginx.conf" "$config"; then
 fi
 
 # Both direct-origin TLS and public DNS/HTTPS must serve the expected bytes.
-python3 "$repo/deploy/verify.py" --release "$release" --connect-address 127.0.0.1
+# systemctl reload returns before old workers have stopped accepting requests.
+python3 "$repo/deploy/verify.py" --release "$release" --connect-address 127.0.0.1 --wait-seconds 10
 python3 "$repo/deploy/verify.py" --release "$release"
 (cd "$legacy" && sha256sum --check --quiet "$backup/legacy.sha256")
 printf '%s\n' "$commit" > "$state/deployed-commit"

@@ -8,6 +8,7 @@ from pathlib import Path
 import re
 import subprocess
 import tempfile
+import time
 from urllib.parse import unquote, urljoin, urlsplit
 
 HOST = "2.tvaity.ru"
@@ -42,6 +43,8 @@ def main():
     parser.add_argument("--legacy-root", type=Path, default=Path("/var/www/2.tvaity.ru"))
     parser.add_argument("--connect-address", help="Pin the connection IP while still validating TLS/SNI")
     parser.add_argument("--legacy-only", action="store_true")
+    parser.add_argument("--wait-seconds", type=float, default=0,
+                        help="Allow nginx workers time to finish a graceful reload")
     args = parser.parse_args()
 
     def request(url):
@@ -75,7 +78,7 @@ def main():
             file = file / "index.html"
         return file
 
-    def check(url):
+    def check_once(url):
         info, body = request(url)
         if info["http_code"] != 200:
             raise RuntimeError(f"HTTP {info['http_code']}: {url}")
@@ -103,6 +106,16 @@ def main():
             if parsed.hostname == HOST and parsed.scheme == "https":
                 local.add(parsed._replace(fragment="").geturl())
         return local
+
+    def check(url):
+        deadline = time.monotonic() + args.wait_seconds
+        while True:
+            try:
+                return check_once(url)
+            except (RuntimeError, subprocess.CalledProcessError):
+                if time.monotonic() >= deadline:
+                    raise
+                time.sleep(0.2)
 
     routes = ["/reg", "/reg-01"]
     if not args.legacy_only:
