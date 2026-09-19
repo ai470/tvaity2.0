@@ -209,11 +209,11 @@ a {
    Секция по высоте контента: на узких экранах фиксированные 100vh оставляли
    мёртвую зону между таймером и подвалом. */
 
-@media (max-width: 767px) {
+@media (max-width: 1023px) {
   .hero {
     min-height: 0;
     align-items: center;
-    padding: clamp(40px, 9vw, 64px) 20px clamp(48px, 11vw, 76px);
+    padding: clamp(40px, 9vw, 64px) 20px clamp(32px, 7vw, 56px);
   }
 
   .hero__inner {
@@ -243,7 +243,7 @@ a {
   position: relative;
   z-index: 1;
   flex-shrink: 0;
-  margin-top: auto;
+  margin-top: 0;
   background: var(--bg);
   color: #5C6F99;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
@@ -440,6 +440,7 @@ body.gc-layer-open {
   min-height: 100vh;
   min-height: 100dvh;
   border: 0;
+  transform-origin: top left;
 }
 
 /* Реальная высота пришла — заглушка убирается, иначе снизу белый хвост. */

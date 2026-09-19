@@ -61,8 +61,11 @@ def main():
 
     def expected_file(url):
         path = unquote(urlsplit(url).path)
+        overlay = args.release / "legacy" / path.lstrip("/")
         if path.startswith(("/reg-short/", "/sps/")):
             root = args.release.resolve()
+        elif overlay.is_file() or (overlay / "index.html").is_file():
+            root = (args.release / "legacy").resolve()
         else:
             root = args.legacy_root.resolve()
         file = (root / path.lstrip("/")).resolve()
@@ -110,6 +113,9 @@ def main():
             for file in (args.release / route).rglob("*"):
                 if file.is_file():
                     pending.add(ORIGIN + "/" + file.relative_to(args.release).as_posix())
+        for file in (args.release / "legacy").rglob("*"):
+            if file.is_file():
+                pending.add(ORIGIN + "/" + file.relative_to(args.release / "legacy").as_posix())
     checked = set()
     with ThreadPoolExecutor(max_workers=6) as pool:
         while pending:

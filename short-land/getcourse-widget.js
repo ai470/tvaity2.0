@@ -30,6 +30,7 @@
     iframe.title = "Регистрация — ТВАЙТИ 2.0";
     iframe.loading = "eager";
     iframe.allowFullscreen = true;
+    iframe.dataset.accountId = "915048";
     // Удобно проверить собранные метки прямо в DevTools, не заходя в GetCourse.
     iframe.setAttribute("data-gc-src", iframeSrc);
     window.__gcIframeSrc = iframeSrc;
@@ -42,6 +43,9 @@
       layer.classList.add("is-open");
       layer.setAttribute("aria-hidden", "false");
       document.body.classList.add("gc-layer-open");
+      layer.scrollTop = 0;
+      layer.querySelector(".gc-layer__inner").scrollTop = 0;
+      layer.querySelector(".gc-layer__close").focus({ preventScroll: true });
     }
 
     function closeLayer() {
@@ -70,23 +74,32 @@
       }
     });
 
-    var appliedHeight = 0;
+    var contentHeight = 0;
 
-    function applyHeight(height) {
-      if (height === appliedHeight) return;
-      appliedHeight = height;
+    function resizeFrame() {
+      // В самой форме GetCourse кнопка не помещается в 320px. Сохраняем её
+      // рабочую ширину, уменьшая весь iframe только на самых узких экранах.
+      var scale = Math.min(1, frameContainer.clientWidth / 360);
+      if (scale <= 0) return;
+      iframe.style.width = scale < 1 ? "360px" : "100%";
+      iframe.style.transform = scale < 1 ? "scale(" + scale + ")" : "";
+      if (!contentHeight) return;
 
       // Срезаем собственные отступы блока GetCourse: iframe тянем на полную
       // присланную высоту и сдвигаем вверх, а видимое окно делаем короче.
-      var crop = height >= GC_MIN_USABLE_HEIGHT ? GC_INNER_PADDING : 0;
+      var crop = GC_INNER_PADDING;
 
-      iframe.style.height = height + "px";
-      iframe.style.marginTop = crop ? -crop + "px" : "";
-      frameContainer.style.height = height - crop * 2 + "px";
+      iframe.style.height = contentHeight + "px";
+      iframe.style.marginTop = -crop * scale + "px";
+      frameContainer.style.height = (contentHeight - crop * 2) * scale + "px";
       layer.setAttribute("data-gc-sized", "");
     }
 
+    resizeFrame();
+    window.addEventListener("resize", resizeFrame);
+
     window.addEventListener("message", function (event) {
+      if (event.source !== iframe.contentWindow || event.origin !== GC_ACCOUNT_ORIGIN) return;
       var data = event.data;
       if (typeof data === "string") {
         try {
@@ -97,17 +110,15 @@
       }
       if (!data || typeof data !== "object") return;
 
-      // Как проверяет сам GetCourse. Origin не используем как единственный фильтр:
-      // аккаунт может отвечать с другого хоста, и тогда высота молча не применялась бы.
-      var isOurWidget =
-        data.uniqName === GC_UNIQ_NAME ||
-        (event.source === iframe.contentWindow && event.origin === GC_ACCOUNT_ORIGIN);
-      if (!isOurWidget) return;
+      if (data.uniqName && data.uniqName !== GC_UNIQ_NAME) return;
 
       var height = Number(data.height || data.frameHeight || (data.data && data.data.height));
-      if (!isFinite(height) || height <= 0) return;
+      if (!isFinite(height) || height < GC_MIN_USABLE_HEIGHT) return;
+      height = Math.ceil(height);
+      if (height === contentHeight) return;
 
-      applyHeight(height);
+      contentHeight = height;
+      resizeFrame();
     });
   }
 

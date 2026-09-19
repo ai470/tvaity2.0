@@ -65,6 +65,11 @@ trap 'exit 143' TERM
 # No build or copy takes place in the directory currently served by nginx.
 git archive "$commit" short-land sps | tar -x -C "$release"
 mv "$release/short-land" "$release/reg-short"
+python3 "$repo/deploy/prepare_legacy.py" --root "$legacy" --release "$release"
+# Keep content-hashed widget chunks available to already-open legacy pages.
+if [[ -n $previous && -d $previous/legacy/_next/static/chunks ]]; then
+    cp -an "$previous/legacy/_next/static/chunks/." "$release/legacy/_next/static/chunks/"
+fi
 find "$release" -type d -exec chmod 0755 {} +
 find "$release" -type f -exec chmod 0644 {} +
 for page in reg-short sps; do

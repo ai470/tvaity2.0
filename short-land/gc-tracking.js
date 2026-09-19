@@ -43,7 +43,7 @@
   function withTrackingParams(baseSrc, opts) {
     var options = opts || {};
     var currentHref = options.currentHref || global.location.href;
-    var search = options.search !== undefined ? options.search : global.location.search;
+    var search = options.search !== undefined ? options.search : new URL(currentHref).search;
     var documentReferrer =
       options.documentReferrer !== undefined ? options.documentReferrer : global.document.referrer;
     var clrtQueryData =
@@ -81,7 +81,9 @@
       // игнорируем ошибки сериализации
     }
 
-    return targetUrl.toString();
+    // Встроенный getGet() формы использует decodeURI и не декодирует "+" в пробел.
+    // %20 работает и с этим скриптом, и со стандартным URLSearchParams.
+    return targetUrl.toString().replace(/\+/g, "%20");
   }
 
   global.GcTracking = {
