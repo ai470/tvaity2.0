@@ -41,6 +41,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--release", type=Path, default=Path("/var/www/tvaity2.0-deploy/current"))
     parser.add_argument("--legacy-root", type=Path, default=Path("/var/www/2.tvaity.ru"))
+    parser.add_argument("--kurs-root", type=Path, default=Path("/var/www/tvoi-trek-deploy/current"))
     parser.add_argument("--connect-address", help="Pin the connection IP while still validating TLS/SNI")
     parser.add_argument("--legacy-only", action="store_true")
     parser.add_argument("--wait-seconds", type=float, default=0,
@@ -65,7 +66,9 @@ def main():
     def expected_file(url):
         path = unquote(urlsplit(url).path)
         overlay = args.release / "legacy" / path.lstrip("/")
-        if path.startswith(("/reg-short/", "/sps/")):
+        if path.startswith("/kurs/"):
+            root = args.kurs_root.resolve()
+        elif path.startswith(("/reg-short/", "/sps/")):
             root = args.release.resolve()
         elif overlay.is_file() or (overlay / "index.html").is_file():
             root = (args.release / "legacy").resolve()
@@ -119,13 +122,16 @@ def main():
 
     routes = ["/reg", "/reg-01"]
     if not args.legacy_only:
-        routes += ["/reg-short", "/sps"]
+        routes += ["/reg-short", "/sps", "/kurs"]
     pending = {ORIGIN + "/"} | {ORIGIN + route + "/" for route in routes}
     if not args.legacy_only:
         for route in ("reg-short", "sps"):
             for file in (args.release / route).rglob("*"):
                 if file.is_file():
                     pending.add(ORIGIN + "/" + file.relative_to(args.release).as_posix())
+        for file in (args.kurs_root / "kurs").rglob("*"):
+            if file.is_file():
+                pending.add(ORIGIN + "/" + file.relative_to(args.kurs_root).as_posix())
         for file in (args.release / "legacy").rglob("*"):
             if file.is_file():
                 pending.add(ORIGIN + "/" + file.relative_to(args.release / "legacy").as_posix())

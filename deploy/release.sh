@@ -7,6 +7,7 @@ umask 022
 repo=/var/www/tvaity2.0
 state=/var/www/tvaity2.0-deploy
 legacy=/var/www/2.tvaity.ru
+kurs=/var/www/tvoi-trek-deploy/current/kurs
 config=/etc/nginx/sites-available/tvaity2
 enabled=/etc/nginx/sites-enabled/tvaity2
 cd "$repo"
@@ -15,6 +16,7 @@ for command in git tar python3 curl nginx runuser; do command -v "$command" >/de
 [[ ! -e $state/current || -L $state/current ]] || { echo 'current must be a symlink.' >&2; exit 1; }
 nginx -t
 for page in reg reg-01; do runuser -u www-data -- test -r "$legacy/$page/index.html"; done
+runuser -u www-data -- test -r "$kurs/index.html"
 
 commit=$(git rev-parse HEAD)
 id="$(date -u +%Y%m%dT%H%M%S)-${commit:0:12}-$$"
